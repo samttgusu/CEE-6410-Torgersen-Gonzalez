@@ -1,5 +1,5 @@
 $ontext
-CEE 6410 - Engineering Resources Systems Analysis
+CEE 6410 - Engineering Systems Analysis
 Example 2.1 from Bishop Et Al Text (https://digitalcommons.usu.edu/ecstatic_all/76/)
 Modifies Example to add a labor constraint
 
@@ -21,9 +21,15 @@ Profit/vehicle        $6000        $7000
 THE SOLUTION:
 Uses General Algebraic Modeling System to Solve this Linear Program
 
+Created:
 David E Rosenberg
 david.rosenberg@usu.edu
 September 15, 2015
+
+Modified:
+Samuel T. Torgersen-Gonzalez
+s.torgersen-gonzalez@usu.edu
+September 21, 2026
 $offtext
 
 * 1. DEFINE the SETS

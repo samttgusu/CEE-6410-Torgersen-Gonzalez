@@ -1,9 +1,9 @@
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 20:40:10 Page 1
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 21:09:40 Page 1
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 C o m p i l a t i o n
 
 
-      CEE 6410 - Engineering Resources Systems Analysis
+      CEE 6410 - Engineering Systems Analysis
       Example 2.1 from Bishop Et Al Text (https://digitalcommons.usu.edu/ecstatic_all/76/)
       Modifies Example to add a labor constraint
        
@@ -25,66 +25,72 @@ C o m p i l a t i o n
       THE SOLUTION:
       Uses General Algebraic Modeling System to Solve this Linear Program
        
+      Created:
       David E Rosenberg
       david.rosenberg@usu.edu
       September 15, 2015
-  28   
-  29  * 1. DEFINE the SETS
-  30  SETS vhcl vehicles produced /Coups, Minivans/
-  31       res resources /Metal, CircutBoards, Labor/;
-  32   
-  33  * 2. DEFINE input data
-  34  PARAMETERS
-  35     c(vhcl) Objective function coefficients ($ per vehicle)
-  36           /Coups 6,
-  37          Minivans 7 /
+       
+      Modified:
+      Samuel T. Torgersen-Gonzalez
+      s.torgersen-gonzalez@usu.edu
+      September 21, 2026
+  34   
+  35  * 1. DEFINE the SETS
+  36  SETS vhcl vehicles produced /Coups, Minivans/
+  37       res resources /Metal, CircutBoards, Labor/;
   38   
-  39     b(res) Right hand constraint values (per resource)
-  40            /Metal 4000000,
-  41             CircutBoards  12000,
-  42             Labor  17500/;
-  43   
-  44  TABLE A(vhcl,res) Left hand side constraint coefficients
-  45                   Metal    CircutBoards   Labor
-  46   Coups           1000     4              5
-  47   Minivans        2000     3              2.5;
-  48   
+  39  * 2. DEFINE input data
+  40  PARAMETERS
+  41     c(vhcl) Objective function coefficients ($ per vehicle)
+  42           /Coups 6,
+  43          Minivans 7 /
+  44   
+  45     b(res) Right hand constraint values (per resource)
+  46            /Metal 4000000,
+  47             CircutBoards  12000,
+  48             Labor  17500/;
   49   
-  50  * 3. DEFINE the variables
-  51  VARIABLES X(vhcl) vehicles produced (Number)
-  52            VPROFIT  total profit ($);
-  53   
-  54  * Non-negativity constraints
-  55  POSITIVE VARIABLES X;
-  56   
-  57  * 4. COMBINE variables and data in equations
-  58  EQUATIONS
-  59     PROFIT Total profit ($) and objective function value
-  60     RES_CONSTRAIN(res) Resource Constraints;
-  61   
-  62  PROFIT..                 VPROFIT =E= SUM(vhcl, c(vhcl)*X(vhcl));
-  63  RES_CONSTRAIN(res) ..    SUM(vhcl, A(vhcl,res)*X(vhcl)) =L= b(res);
-  64   
-  65   
-  66  * 5. DEFINE the MODEL from the EQUATIONS
-  67  MODEL PRODUCTING /PROFIT, RES_CONSTRAIN/;
-  68  *Altnerative way to write (include all previously defined equations)
-  69  *MODEL PRODUCTING /ALL/;
+  50  TABLE A(vhcl,res) Left hand side constraint coefficients
+  51                   Metal    CircutBoards   Labor
+  52   Coups           1000     4              5
+  53   Minivans        2000     3              2.5;
+  54   
+  55   
+  56  * 3. DEFINE the variables
+  57  VARIABLES X(vhcl) vehicles produced (Number)
+  58            VPROFIT  total profit ($);
+  59   
+  60  * Non-negativity constraints
+  61  POSITIVE VARIABLES X;
+  62   
+  63  * 4. COMBINE variables and data in equations
+  64  EQUATIONS
+  65     PROFIT Total profit ($) and objective function value
+  66     RES_CONSTRAIN(res) Resource Constraints;
+  67   
+  68  PROFIT..                 VPROFIT =E= SUM(vhcl, c(vhcl)*X(vhcl));
+  69  RES_CONSTRAIN(res) ..    SUM(vhcl, A(vhcl,res)*X(vhcl)) =L= b(res);
   70   
   71   
-  72  * 6. SOLVE the MODEL
-  73  * Solve the PRODUCTING model using a Linear Programming Solver (see File=>Options=>Solvers)
-  74  *     to maximize VPROFIT
-  75  SOLVE PRODUCTING USING LP MAXIMIZING VPROFIT;
+  72  * 5. DEFINE the MODEL from the EQUATIONS
+  73  MODEL PRODUCTING /PROFIT, RES_CONSTRAIN/;
+  74  *Altnerative way to write (include all previously defined equations)
+  75  *MODEL PRODUCTING /ALL/;
   76   
   77   
-  78  * 6. CLick File menu => RUN (F9) or Solve icon and examine solution report in .LST file
+  78  * 6. SOLVE the MODEL
+  79  * Solve the PRODUCTING model using a Linear Programming Solver (see File=>Options=>Solvers)
+  80  *     to maximize VPROFIT
+  81  SOLVE PRODUCTING USING LP MAXIMIZING VPROFIT;
+  82   
+  83   
+  84  * 6. CLick File menu => RUN (F9) or Solve icon and examine solution report in .LST file
 
 
 COMPILATION TIME     =        0.000 SECONDS      3 MB  54.4.0 9a60ae27 WEX-WEI
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 20:40:10 Page 2
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 21:09:40 Page 2
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Equation Listing    SOLVE PRODUCTING Using LP From line 75
+Equation Listing    SOLVE PRODUCTING Using LP From line 81
 
 
 ---- PROFIT  =E=  Total profit ($) and objective function value
@@ -100,9 +106,9 @@ RES_CONSTRAIN(CircutBoards)..  4*X(Coups) + 3*X(Minivans) =L= 12000 ; (LHS = 0)
      
 RES_CONSTRAIN(Labor)..  5*X(Coups) + 2.5*X(Minivans) =L= 17500 ; (LHS = 0)
      
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 20:40:10 Page 3
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 21:09:40 Page 3
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Column Listing      SOLVE PRODUCTING Using LP From line 75
+Column Listing      SOLVE PRODUCTING Using LP From line 81
 
 
 ---- X  vehicles produced (Number)
@@ -128,9 +134,9 @@ VPROFIT
                 (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
         1       PROFIT
 
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 20:40:10 Page 4
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 21:09:40 Page 4
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Range Statistics    SOLVE PRODUCTING Using LP From line 75
+Range Statistics    SOLVE PRODUCTING Using LP From line 81
 
 
 RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
@@ -139,9 +145,9 @@ RHS       [min, max] : [ 1.200E+04, 4.000E+06] - Zero values observed as well
 Bound     [min, max] : [        NA,        NA] - Zero values observed as well
 Matrix    [min, max] : [ 1.000E+00, 2.000E+03]
 
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 20:40:10 Page 5
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 21:09:40 Page 5
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Model Statistics    SOLVE PRODUCTING Using LP From line 75
+Model Statistics    SOLVE PRODUCTING Using LP From line 81
 
 
 MODEL STATISTICS
@@ -152,16 +158,16 @@ NON ZERO ELEMENTS             9
 
 
 GENERATION TIME      =        0.000 SECONDS      4 MB  54.4.0 9a60ae27 WEX-WEI
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 20:40:10 Page 6
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 21:09:40 Page 6
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Solution Report     SOLVE PRODUCTING Using LP From line 75
+Solution Report     SOLVE PRODUCTING Using LP From line 81
 
 
                S O L V E      S U M M A R Y
 
      MODEL   PRODUCTING          OBJECTIVE  VPROFIT
      TYPE    LP                  DIRECTION  MAXIMIZE
-     SOLVER  CPLEX               FROM LINE  75
+     SOLVER  CPLEX               FROM LINE  81
 
 **** SOLVER STATUS     1 Normal Completion
 **** MODEL STATUS      1 Optimal
