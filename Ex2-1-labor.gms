@@ -39,8 +39,8 @@ SETS vhcl vehicles produced /Coups, Minivans/
 * 2. DEFINE input data
 PARAMETERS
    c(vhcl) Objective function coefficients ($ per vehicle)
-         /Coups 6,
-        Minivans 7 /
+         /Coups 6000,
+        Minivans 7000 /
 
    b(res) Right hand constraint values (per resource)
           /Metal 4000000,

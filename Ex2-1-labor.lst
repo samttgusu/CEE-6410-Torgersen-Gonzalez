@@ -1,4 +1,4 @@
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 21:09:40 Page 1
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 21:18:34 Page 1
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 C o m p i l a t i o n
 
@@ -42,8 +42,8 @@ C o m p i l a t i o n
   39  * 2. DEFINE input data
   40  PARAMETERS
   41     c(vhcl) Objective function coefficients ($ per vehicle)
-  42           /Coups 6,
-  43          Minivans 7 /
+  42           /Coups 6000,
+  43          Minivans 7000 /
   44   
   45     b(res) Right hand constraint values (per resource)
   46            /Metal 4000000,
@@ -88,14 +88,14 @@ C o m p i l a t i o n
 
 
 COMPILATION TIME     =        0.000 SECONDS      3 MB  54.4.0 9a60ae27 WEX-WEI
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 21:09:40 Page 2
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 21:18:34 Page 2
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Equation Listing    SOLVE PRODUCTING Using LP From line 81
 
 
 ---- PROFIT  =E=  Total profit ($) and objective function value
 
-PROFIT..  - 6*X(Coups) - 7*X(Minivans) + VPROFIT =E= 0 ; (LHS = 0)
+PROFIT..  - 6000*X(Coups) - 7000*X(Minivans) + VPROFIT =E= 0 ; (LHS = 0)
      
 
 ---- RES_CONSTRAIN  =L=  Resource Constraints
@@ -106,7 +106,7 @@ RES_CONSTRAIN(CircutBoards)..  4*X(Coups) + 3*X(Minivans) =L= 12000 ; (LHS = 0)
      
 RES_CONSTRAIN(Labor)..  5*X(Coups) + 2.5*X(Minivans) =L= 17500 ; (LHS = 0)
      
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 21:09:40 Page 3
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 21:18:34 Page 3
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Column Listing      SOLVE PRODUCTING Using LP From line 81
 
@@ -115,14 +115,14 @@ Column Listing      SOLVE PRODUCTING Using LP From line 81
 
 X(Coups)
                 (.LO, .L, .UP, .M = 0, 0, +INF, 0)
-       -6       PROFIT
+    -6000       PROFIT
      1000       RES_CONSTRAIN(Metal)
         4       RES_CONSTRAIN(CircutBoards)
         5       RES_CONSTRAIN(Labor)
 
 X(Minivans)
                 (.LO, .L, .UP, .M = 0, 0, +INF, 0)
-       -7       PROFIT
+    -7000       PROFIT
      2000       RES_CONSTRAIN(Metal)
         3       RES_CONSTRAIN(CircutBoards)
         2.5     RES_CONSTRAIN(Labor)
@@ -134,7 +134,7 @@ VPROFIT
                 (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
         1       PROFIT
 
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 21:09:40 Page 4
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 21:18:34 Page 4
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Range Statistics    SOLVE PRODUCTING Using LP From line 81
 
@@ -143,9 +143,9 @@ RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
 
 RHS       [min, max] : [ 1.200E+04, 4.000E+06] - Zero values observed as well
 Bound     [min, max] : [        NA,        NA] - Zero values observed as well
-Matrix    [min, max] : [ 1.000E+00, 2.000E+03]
+Matrix    [min, max] : [ 1.000E+00, 7.000E+03]
 
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 21:09:40 Page 5
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 21:18:34 Page 5
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Model Statistics    SOLVE PRODUCTING Using LP From line 81
 
@@ -158,7 +158,7 @@ NON ZERO ELEMENTS             9
 
 
 GENERATION TIME      =        0.000 SECONDS      4 MB  54.4.0 9a60ae27 WEX-WEI
-GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 21:09:40 Page 6
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/21/26 21:18:34 Page 6
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Solution Report     SOLVE PRODUCTING Using LP From line 81
 
@@ -171,7 +171,7 @@ Solution Report     SOLVE PRODUCTING Using LP From line 81
 
 **** SOLVER STATUS     1 Normal Completion
 **** MODEL STATUS      1 Optimal
-**** OBJECTIVE VALUE            20000.0000
+**** OBJECTIVE VALUE         20000000.0000
 
  RESOURCE USAGE, LIMIT          0.000 10000000000.000
  ITERATION COUNT, LIMIT         3    2147483647
@@ -188,7 +188,7 @@ Solution Report     SOLVE PRODUCTING Using LP From line 81
 
 
 Optimal solution found
-Objective:        20000.000000
+Objective:     20000000.000000
 
 
                            LOWER          LEVEL          UPPER         MARGINAL
@@ -201,8 +201,8 @@ Objective:        20000.000000
 
                     LOWER          LEVEL          UPPER         MARGINAL
 
-Metal               -INF      4000000.0000   4000000.0000         0.0020      
-CircutBoards        -INF        12000.0000     12000.0000         1.0000      
+Metal               -INF      4000000.0000   4000000.0000         2.0000      
+CircutBoards        -INF        12000.0000     12000.0000      1000.0000      
 Labor               -INF        14000.0000     17500.0000          .          
 
 ---- VAR X  vehicles produced (Number)
@@ -214,7 +214,7 @@ Minivans          .           800.0000        +INF             .
 
                            LOWER          LEVEL          UPPER         MARGINAL
 
----- VAR VPROFIT           -INF        20000.0000        +INF             .          
+---- VAR VPROFIT           -INF      2.0000000E+7        +INF             .          
 
   VPROFIT  total profit ($)
 
