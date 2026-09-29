@@ -1,0 +1,16 @@
+B 3 C o m p i l a t i o n
+B 89 Equation Listing    SOLVE SHIPPING Using LP From line 77
+D 92 COST
+D 97 SUPPLY_CONSTRAIN
+D 104 DEAL_CONSTRAIN
+B 116 Column Listing      SOLVE SHIPPING Using LP From line 77
+E 119 X
+E 141 VCOST
+B 149 Range Statistics    SOLVE SHIPPING Using LP From line 77
+B 160 Model Statistics    SOLVE SHIPPING Using LP From line 77
+B 173 Solution Report     SOLVE SHIPPING Using LP From line 77
+F 206 COST
+F 210 SUPPLY_CONSTRAIN
+F 217 DEAL_CONSTRAIN
+G 226 X
+G 241 VCOST

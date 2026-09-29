@@ -1,0 +1,262 @@
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/29/26 11:33:41 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+      CEE 6410 - Engineering Systems Analysis
+      Homework 3 - Network Shipping Problem
+       
+      THE PROBLEM:
+       
+      An automobile company must decide how to move cars from suppliers in Kansas City
+        and Dallas to dealerships in New York, Minneapolis, Seattle, and San Francisco.
+       
+      Suppliers or Dealerships     Kansas City (KC)     Dallas (DAL)
+      New York (NY)                $12/car              $15/car       250 car
+      Minneapolis (MIN)            $4/car               $9/car        400 car
+      Seattle (SEA)                $18/car              $21/car       450 car
+      San Francisco (SF)           $18/car              $17/car       450 car
+      Vehicles/supplier            1000                 800
+       
+      Determine the optimal shipping volumes to move cars between the locations.
+       
+      THE SOLUTION:
+      Uses General Algebraic Modeling System to Solve this Linear Program
+       
+      Created:
+      Samuel T. Torgersen-Gonzalez
+      s.torgersen-gonzalez@usu.edu
+      September 27, 2026
+  27   
+  28  * 1. DEFINE the SETS
+  29  SETS sup cars at suppliers /KC, DAL/
+  30       deal dealerships /NY, MIN, SEA, SF/;
+  31   
+  32  * 2. DEFINE input data
+  33  PARAMETERS
+  34     c(sup) Objective function coefficients (cars per supplier)
+  35           /KC  1000,
+  36            DAL  800/
+  37   
+  38     b(deal) Right hand constraint values (number of sales at each dealership)
+  39           /NY   250,
+  40            MIN  400,
+  41            SEA  450,
+  42            SF   450/;
+  43   
+  44  TABLE A(sup,deal) Left hand side constraint coefficients
+  45          NY   MIN    SEA   SF
+  46  KC      12    4     18    18
+  47  DAL     15    9     21    17;
+  48   
+  49   
+  50  * 3. DEFINE the variables
+  51  VARIABLES X(sup,deal) cars to be shipped from supplier to dealership (Number)
+  52            VCOST  total shipping cost ($);
+  53   
+  54  * Non-negativity constraints
+  55  POSITIVE VARIABLES X;
+  56   
+  57  * 4. COMBINE variables and data in equations
+  58  EQUATIONS
+  59     COST Total cost ($) and objective function value
+  60     SUPPLY_CONSTRAIN(sup) Supplier supply
+  61     DEAL_CONSTRAIN(deal) Dealership orders;
+  62   
+  63  COST..                    VCOST =E= SUM((sup,deal), A(sup,deal)*X(sup,deal));
+  64  SUPPLY_CONSTRAIN(sup)..   SUM(deal, X(sup,deal)) =L= c(sup);
+  65  DEAL_CONSTRAIN(deal)..    SUM(sup, X(sup,deal)) =G= b(deal);
+  66   
+  67   
+  68  * 5. DEFINE the MODEL from the EQUATIONS
+  69  MODEL SHIPPING /COST, SUPPLY_CONSTRAIN, DEAL_CONSTRAIN/;
+  70  *Altnerative way to write (include all previously defined equations)
+  71  *MODEL PRODUCTING /ALL/;
+  72   
+  73   
+  74  * 6. SOLVE the MODEL
+  75  * Solve the PRODUCTING model using a Linear Programming Solver (see File=>Options=>Solvers)
+  76  *     to maximize VPROFIT
+  77  SOLVE SHIPPING USING LP MINIMIZING VCOST;
+  78   
+  79   
+  80  * 6. CLick File menu => RUN (F9) or Solve icon and examine solution report in .LST file
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  54.4.0 9a60ae27 WEX-WEI
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/29/26 11:33:41 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE SHIPPING Using LP From line 77
+
+
+---- COST  =E=  Total cost ($) and objective function value
+
+COST..  - 12*X(KC,NY) - 4*X(KC,MIN) - 18*X(KC,SEA) - 18*X(KC,SF) - 15*X(DAL,NY) - 9*X(DAL,MIN) - 21*X(DAL,SEA) - 17*X(DAL,SF) + VCOST =E= 0 ; (LHS = 0)
+     
+
+---- SUPPLY_CONSTRAIN  =L=  Supplier supply
+
+SUPPLY_CONSTRAIN(KC)..  X(KC,NY) + X(KC,MIN) + X(KC,SEA) + X(KC,SF) =L= 1000 ; (LHS = 0)
+     
+SUPPLY_CONSTRAIN(DAL)..  X(DAL,NY) + X(DAL,MIN) + X(DAL,SEA) + X(DAL,SF) =L= 800 ; (LHS = 0)
+     
+
+---- DEAL_CONSTRAIN  =G=  Dealership orders
+
+DEAL_CONSTRAIN(NY)..  X(KC,NY) + X(DAL,NY) =G= 250 ; (LHS = 0, INFES = 250 ****)
+     
+DEAL_CONSTRAIN(MIN)..  X(KC,MIN) + X(DAL,MIN) =G= 400 ; (LHS = 0, INFES = 400 ****)
+     
+DEAL_CONSTRAIN(SEA)..  X(KC,SEA) + X(DAL,SEA) =G= 450 ; (LHS = 0, INFES = 450 ****)
+     
+REMAINING ENTRY SKIPPED
+
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/29/26 11:33:41 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE SHIPPING Using LP From line 77
+
+
+---- X  cars to be shipped from supplier to dealership (Number)
+
+X(KC,NY)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+      -12       COST
+        1       SUPPLY_CONSTRAIN(KC)
+        1       DEAL_CONSTRAIN(NY)
+
+X(KC,MIN)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -4       COST
+        1       SUPPLY_CONSTRAIN(KC)
+        1       DEAL_CONSTRAIN(MIN)
+
+X(KC,SEA)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+      -18       COST
+        1       SUPPLY_CONSTRAIN(KC)
+        1       DEAL_CONSTRAIN(SEA)
+
+REMAINING 5 ENTRIES SKIPPED
+
+---- VCOST  total shipping cost ($)
+
+VCOST
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       COST
+
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/29/26 11:33:41 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE SHIPPING Using LP From line 77
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 2.500E+02, 1.000E+03] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 2.100E+01]
+
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/29/26 11:33:41 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE SHIPPING Using LP From line 77
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           3     SINGLE EQUATIONS            7
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES            9
+NON ZERO ELEMENTS            25
+
+
+GENERATION TIME      =        1.406 SECONDS      4 MB  54.4.0 9a60ae27 WEX-WEI
+GAMS 54.4.0  9a60ae27 Sep 9, 2026           WEX-WEI x86 64bit/MS Windows - 09/29/26 11:33:41 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE SHIPPING Using LP From line 77
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   SHIPPING            OBJECTIVE  VCOST
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  77
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE            20650.0000
+
+ RESOURCE USAGE, LIMIT          0.000 10000000000.000
+ ITERATION COUNT, LIMIT         5    2147483647
+*** This solver runs with a community license.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.2.0 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- LP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.01 ticks)
+
+
+Optimal solution found
+Objective:        20650.000000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU COST                .              .              .             1.0000      
+
+  COST  Total cost ($) and objective function value
+
+---- EQU SUPPLY_CONSTRAIN  Supplier supply
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+KC         -INF         1000.0000      1000.0000        -3.0000      
+DAL        -INF          550.0000       800.0000          .          
+
+---- EQU DEAL_CONSTRAIN  Dealership orders
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+NY        250.0000       250.0000        +INF           15.0000      
+MIN       400.0000       400.0000        +INF            7.0000      
+SEA       450.0000       450.0000        +INF           21.0000      
+SF        450.0000       450.0000        +INF           17.0000      
+
+---- VAR X  cars to be shipped from supplier to dealership (Number)
+
+               LOWER          LEVEL          UPPER         MARGINAL
+
+KC .NY           .           150.0000        +INF             .          
+KC .MIN          .           400.0000        +INF             .          
+KC .SEA          .           450.0000        +INF             .          
+KC .SF           .              .            +INF            4.0000      
+DAL.NY           .           100.0000        +INF             .          
+DAL.MIN          .              .            +INF            2.0000      
+DAL.SEA          .              .            +INF            EPS         
+DAL.SF           .           450.0000        +INF             .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR VCOST             -INF        20650.0000        +INF             .          
+
+  VCOST  total shipping cost ($)
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+
+
+EXECUTION TIME       =        5.422 SECONDS      4 MB  54.4.0 9a60ae27 WEX-WEI
+
+
+USER: Course License                                 G260818+0003Ac-GEN
+      Utah State University                                     DCE5615
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\samto\OneDrive - USU\CEE6410\Github Local\CEE-6410-Torgersen-Gonzalez\HW3 Network-Shipping-Problem.gms
+Output     C:\Users\samto\OneDrive - USU\CEE6410\Github Local\CEE-6410-Torgersen-Gonzalez\HW3 Network-Shipping-Problem.lst
