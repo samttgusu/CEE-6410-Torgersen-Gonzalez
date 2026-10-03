@@ -1,53 +1,52 @@
 $ontext
-CEE 6410 - Water Resources Systems Analysis
-Example 2.1 from Bishop Et Al Text (https://digitalcommons.usu.edu/ecstatic_all/76/)
-Modifies Example to add a labor constraint
+CEE 6410 - Engineering Systems Analysis
 
 Formulate and solve the PRIMAL and DUALs of THE PROBLEM:
 
-An irrigated farm can be planted in two crops:  eggplants and tomatoes.  Data are as fol-lows:
+An aqueduct has excess capacity in the months of June, July, & August.
+  Hay or grain can be planted over a max of 10000 acres. Data are as follows:
 
-Seasonal Resource
-Inputs or Profit        Crops        Resource
-Availability
-        Eggplant        Tomatoes
-Water        1x103 gal/plant        2x103 gal/plant      4x106 gal/year
-Land        4 ft2/plant        3 ft2/plant               1.2x104 ft2
-Labor         5hr/plant        2.5/hr plant              17,500 hours
-Profit/plant        $6        $7
-                Determine the optimal planting for the two crops.
+                        Hay        Grain
+June                    2          1            14000 acft
+July                    1          2            18000 acft
+August                  1          0             6000 acft
+Land                    1          1            10000 acre
+Return, $/acre          $100       $120
+
+    Determine the optimal planting for the two crops.
 
 THE SOLUTION:
 Uses General Algebraic Modeling System to Solve this Linear Program
 
-David E Rosenberg
-david.rosenberg@usu.edu
-September 20, 2020
+Samuel Torgersen-Gonzalez
+s.torgersen-gonzalez@usu.edu
+1 October 2026
 $offtext
 
 * 1. DEFINE the SETS
-SETS plnt crops growing /Eggplant, Tomatoes/
-     res resources /Water, Land, Labor/;
+SETS plnt crops growing /Hay, Grain/
+     mnth months /June, July, August, Land/;
 
 * 2. DEFINE input data
 PARAMETERS
-   c(plnt) Objective function coefficients ($ per plant)
-         /Eggplant 6,
-         Tomatoes 7/
-   b(res) Right hand constraint values (per resource)
-          /Water 4000000,
-           Land  12000,
-           Labor 17500 /;
+   c(plnt) Objective function coefficients ($ per acre)
+         /Hay   100,
+          Grain 120/
+   b(mnth) Right hand constraint values (acft per month)
+          /June   14000,
+           July   18000,
+           August  6000
+           Land   10000/;
 
-TABLE A(plnt,res) Left hand side constraint coefficients
-                 Water    Land  Labor     
- Eggplant        1000      4      5         
- Tomatoes        2000      3      2.5 ;     
+TABLE A(plnt,mnth) Left hand side constraint coefficients
+            June  July  August  Land     
+ Hay        2     1     1       1  
+ Grain      1     2     0       1     ;     
 
 * 3. DEFINE the variables
-VARIABLES X(plnt) plants planted (Number)
+VARIABLES X(plnt)  crop planted (acft)
           VPROFIT  total profit ($)
-          Y(res)  value of resources used (units specific to variable)
+          Y(mnth)  value of months used (units specific to variable)
           VREDCOST total reduced cost ($);
 
 * Non-negativity constraints
@@ -55,18 +54,18 @@ POSITIVE VARIABLES X,Y;
 
 * 4. COMBINE variables and data in equations
 EQUATIONS
-   PROFIT_PRIMAL Total profit ($) and objective function value
-   RES_CONS_PRIMAL(res) Resource constraints
-   REDCOST_DUAL Reduced Cost ($) associated with using resources
+   PROFIT_PRIMAL Total benefit ($) and objective function value
+   RES_CONS_PRIMAL(mnth) Month constraints
+   REDCOST_DUAL Reduced benefit ($) associated with using months
    RES_CONS_DUAL(plnt) Profit levels ;
 
 *Primal Equations
 PROFIT_PRIMAL..                 VPROFIT =E= SUM(plnt,c(plnt)*X(plnt));
-RES_CONS_PRIMAL(res) ..    SUM(plnt,A(plnt,res)*X(plnt)) =L= b(res);
+RES_CONS_PRIMAL(mnth) ..    SUM(plnt,A(plnt,mnth)*X(plnt)) =L= b(mnth);
 
 *Dual Equations
-REDCOST_DUAL..                 VREDCOST =E= SUM(res,b(res)*Y(res));
-RES_CONS_DUAL(plnt)..          sum(res,A(plnt,res)*Y(res)) =G= c(plnt);
+REDCOST_DUAL..                 VREDCOST =E= SUM(mnth,b(mnth)*Y(mnth));
+RES_CONS_DUAL(plnt)..          sum(mnth,A(plnt,mnth)*Y(mnth)) =G= c(plnt);
 
 X.LO(plnt) = 5;
 
