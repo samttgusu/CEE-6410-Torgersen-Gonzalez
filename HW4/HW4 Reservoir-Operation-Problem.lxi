@@ -1,0 +1,32 @@
+B 3 C o m p i l a t i o n
+B 116 Equation Listing    SOLVE RESERVOIR Using LP From line 104
+D 119 max_benefit
+D 124 mass_balance
+D 135 turbine_capacity
+D 146 storage_capacity
+D 157 river_flow
+D 168 flow_at_A
+D 179 ending_storage
+B 185 Column Listing      SOLVE RESERVOIR Using LP From line 104
+E 188 storage
+E 210 hydro
+E 235 spill
+E 254 irr
+E 273 flowA
+E 292 benefit
+B 300 Range Statistics    SOLVE RESERVOIR Using LP From line 104
+B 311 Model Statistics    SOLVE RESERVOIR Using LP From line 104
+B 324 Solution Report     SOLVE RESERVOIR Using LP From line 104
+F 357 max_benefit
+F 361 mass_balance
+F 372 turbine_capacity
+F 383 storage_capacity
+F 394 river_flow
+F 405 flow_at_A
+F 418 ending_storage
+G 422 storage
+G 433 hydro
+G 444 spill
+G 455 irr
+G 466 flowA
+G 479 benefit

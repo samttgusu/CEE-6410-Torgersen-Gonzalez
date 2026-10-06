@@ -1,0 +1,71 @@
+
+--- Job HW4 Reservoir-Operation-Problem.gms Start 10/05/26 16:25:04 54.4.0 9a60ae27 WEX-WEI x86 64bit/MS Windows
+--- Applying:
+    C:\GAMS\54\gmsprmNT.txt
+--- GAMS Parameters defined
+    Input "C:\Users\samto\OneDrive - USU\CEE6410\Github Local\CEE-6410-Torgersen-Gonzalez\HW4\HW4 Reservoir-Operation-Problem.gms"
+    PageSize 0
+    ScrDir "C:\Users\samto\OneDrive - USU\CEE6410\Github Local\CEE-6410-Torgersen-Gonzalez\HW4\225b\"
+    SysDir C:\GAMS\54\
+    LogOption 3
+    AppendLog 1
+    ErrMsg 1
+    ErrorLog 99
+    IDE 1
+    LstTitleLeftAligned 1
+Licensee: Course License                                 G260818+0003Ac-GEN
+          Utah State University                                     DCE5615
+          225b\gamslice.dat
+          1d9a2824-f32d-4897
+          node:88380905 mem:32 cores:8 ipport:59723 v:2                    
+          Course license for use within the course and related course work
+          The time-limited license stops working on : Jun 14, 2027
+System information: 8 physical cores and 32 Gb physical memory detected
+GAMS 54.4.0   Copyright (C) 1987-2026 GAMS Development. All rights reserved
+--- Starting compilation
+--- HW4 Reservoir-Operation-Problem.gms(107) 3 Mb
+--- Starting execution: elapsed 0:00:00.013
+--- Generating LP model RESERVOIR
+--- HW4 Reservoir-Operation-Problem.gms(104) 4 Mb
+---   32 rows  31 columns  79 non-zeroes
+--- Range statistics (absolute non-zero finite values)
+--- RHS       [min, max] : [ 1.000E+00, 9.000E+00] - Zero values observed as well
+--- Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+--- Matrix    [min, max] : [ 1.000E+00, 2.200E+00]
+--- Executing CPLEX (Solvelink=2): elapsed 0:00:00.016
+
+IBM ILOG CPLEX   54.4.0 9a60ae27 Sep 9, 2026           WEI x86 64bit/MS Window
+
+*** This solver runs with a community license.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.2.0 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+Version identifier: 22.1.2.0 | 2024-11-25 | 0edbb82fd
+CPXPARAM_Advance                                 0
+CPXPARAM_MIP_Display                             4
+CPXPARAM_MIP_Pool_Capacity                       0
+CPXPARAM_Preprocessing_QCPDuals                  0
+CPXPARAM_MIP_Tolerances_AbsMIPGap                0
+Tried aggregator 1 time.
+LP Presolve eliminated 19 rows and 7 columns.
+Reduced LP has 12 rows, 24 columns, and 41 nonzeros.
+Presolve time = 0.00 sec. (0.03 ticks)
+Initializing dual steep norms . . .
+
+Iteration log . . .
+Iteration:     1   Dual infeasibility =             8.299999
+Iteration:     9   Dual objective     =            66.200000
+
+--- LP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.06 ticks)
+
+
+Optimal solution found
+Objective:           51.600000
+
+--- Reading solution for model RESERVOIR
+*** Status: Normal completion
+--- Job HW4 Reservoir-Operation-Problem.gms Stop 10/05/26 16:25:04 elapsed 0:00:00.064
