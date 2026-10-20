@@ -1,108 +1,118 @@
-GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:06:38 Page 1
+GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:37:05 Page 1
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 C o m p i l a t i o n
 
 
-      Reservoir Design and Irrigation Supply Problem
-      Formulated based on Problem 7.4 (Figure 7.3 & Table 7.5)
+      Homework 5
+      CEE 6410/5410
+      October 15, 2026
       Pure Scalar Version - No sets, indices, or array mappings.
-   6   
-   7  * 1. DEFINE ALL SCALAR VARIABLES
-   8  VARIABLES
-   9     v_profit           Total annual net profit ($);
-  10   
-  11  POSITIVE VARIABLES
-  12     v_acres            Acres irrigated (continuous)
-  13     v_storage1         Storage in reservoir at end of Season 1 (acft)
-  14     v_storage2         Storage in reservoir at end of Season 2 (acft)
-  15     v_release1         Gravity release to farm in Season 1 (acft)
-  16     v_release2         Gravity release to farm in Season 2 (acft)
-  17     v_spill1           Spill from reservoir downstream in Season 1 (acft)
-  18     v_spill2           Spill from reservoir downstream in Season 2 (acft)
-  19     v_pumped1          Water pumped from river to farm in Season 1 (acft)
-  20     v_pumped2          Water pumped from river to farm in Season 2 (acft);
-  21   
-  22  BINARY VARIABLES
-  23     v_build_high       1 if high dam (700 acft) is built else 0
-  24     v_build_low        1 if low dam (300 acft) is built else 0
-  25     v_build_pump       1 if pump station is built else 0;
+       
+      Samuel T. Torgersen-Gonzalez
+      s.torgersen-gonzalez@usu.edu
+      October 15, 2026
+  11   
+  12  * 1. DEFINE ALL SCALAR VARIABLES
+  13  VARIABLES
+  14     v_profit           Total annual net profit ($);
+  15   
+  16  POSITIVE VARIABLES
+  17     v_acres            Acres irrigated (continuous)
+  18     v_storage1         Storage in reservoir at end of Season 1 (acft)
+  19     v_storage2         Storage in reservoir at end of Season 2 (acft)
+  20     v_release1         Gravity release to farm in Season 1 (acft)
+  21     v_release2         Gravity release to farm in Season 2 (acft)
+  22     v_spill1           Spill from reservoir downstream in Season 1 (acft)
+  23     v_spill2           Spill from reservoir downstream in Season 2 (acft)
+  24     v_pumped1          Water pumped from river to farm in Season 1 (acft)
+  25     v_pumped2          Water pumped from river to farm in Season 2 (acft);
   26   
-  27  * 2. DECLARE EQUATIONS
-  28  EQUATIONS
-  29     EQ_OBJ             "Objective function to maximize net profit"
-  30     EQ_DAM_MUTEX       "Ensure only one dam size can be selected"
-  31     EQ_WATER_BAL_1     "Reservoir mass balance for Season 1"
-  32     EQ_WATER_BAL_2     "Reservoir mass balance for Season 2"
-  33     EQ_CAP_STORAGE_1   "Reservoir storage capacity limit for Season 1"
-  34     EQ_CAP_STORAGE_2   "Reservoir storage capacity limit for Season 2"
-  35     EQ_CAP_PUMP_1      "Pump capacity limit for Season 1 (2.2 acft/day * 182.5 days)"
-  36     EQ_CAP_PUMP_2      "Pump capacity limit for Season 2 (2.2 acft/day * 182.5 days)"
-  37     EQ_PUMP_AVAIL_1    "Water available to pump in Season 1 (Spill + 2.0 acft/day * 182.5 days)"
-  38     EQ_PUMP_AVAIL_2    "Water available to pump in Season 2 (Spill + 2.0 acft/day * 182.5 days)"
-  39     EQ_DEMAND_BAL_1    "Meet irrigation demand for Season 1 (1.0 acft/acre)"
-  40     EQ_DEMAND_BAL_2    "Meet irrigation demand for Season 2 (3.0 acft/acre)";
-  41   
-  42  * 3. EQUATION DEFINITIONS
-  43  * Objective: 300*Acres - Capital Costs - 20*Pumping
-  44  EQ_OBJ..
-  45     v_profit =E= (300 * v_acres)
-  46                  - (10000 * v_build_high + 6000 * v_build_low)
-  47                  - (8000 * v_build_pump)
-  48                  - (20 * v_pumped1)
-  49                  - (20 * v_pumped2);
-  50   
-  51  * Dam Selection (High, Low, or None)
-  52  EQ_DAM_MUTEX..
-  53     v_build_high + v_build_low =L= 1;
-  54   
-  55  * Reservoir Balances (Inflow S1 = 600, S2 = 200)
-  56  EQ_WATER_BAL_1..
-  57     v_storage1 =E= v_storage2 + 600 - v_release1 - v_spill1;
-  58   
-  59  EQ_WATER_BAL_2..
-  60     v_storage2 =E= v_storage1 + 200 - v_release2 - v_spill2;
-  61   
-  62  * Storage Capacity Limits
-  63  EQ_CAP_STORAGE_1..
-  64     v_storage1 =L= 700 * v_build_high + 300 * v_build_low;
-  65   
-  66  EQ_CAP_STORAGE_2..
-  67     v_storage2 =L= 700 * v_build_high + 300 * v_build_low;
-  68   
-  69  * Pump Mechanical Limits: 2.2 acft/day * 182.5 days = 401.5 acft
-  70  EQ_CAP_PUMP_1..
-  71     v_pumped1 =L= 401.5 * v_build_pump;
-  72   
-  73  EQ_CAP_PUMP_2..
-  74     v_pumped2 =L= 401.5 * v_build_pump;
-  75   
-  76  * Pump Water Supply Limits: Spill + (2.0 acft/day * 182.5 days = 365 acft)
-  77  EQ_PUMP_AVAIL_1..
-  78     v_pumped1 =L= v_spill1 + 365.0;
-  79   
-  80  EQ_PUMP_AVAIL_2..
-  81     v_pumped2 =L= v_spill2 + 365.0;
-  82   
-  83  * Demand Balance Constraints (Pure scalar multiplication)
-  84  EQ_DEMAND_BAL_1..
-  85     v_release1 + v_pumped1 =E= 1.0 * v_acres;
-  86   
-  87  EQ_DEMAND_BAL_2..
-  88     v_release2 + v_pumped2 =E= 3.0 * v_acres;
-  89   
-  90  * 4. DEFINE AND SOLVE THE MODEL
-  91  MODEL RESERVOIR /ALL/;
-  92   
-  93  SOLVE RESERVOIR MAXIMIZING v_profit USING MIP;
+  27  BINARY VARIABLES
+  28     v_build_high       1 if high dam (700 acft) is built else 0
+  29     v_build_low        1 if low dam (300 acft) is built else 0
+  30     v_build_pump       1 if pump station is built else 0;
+  31   
+  32  * 2. DECLARE EQUATIONS
+  33  EQUATIONS
+  34     EQ_OBJ             "Objective function to maximize net profit"
+  35     EQ_DAM_MUTEX       "Ensure only one dam size can be selected"
+  36     EQ_WATER_BAL_1     "Reservoir mass balance for Season 1"
+  37     EQ_WATER_BAL_2     "Reservoir mass balance for Season 2"
+  38     EQ_CAP_STORAGE_1   "Reservoir storage capacity limit for Season 1"
+  39     EQ_CAP_STORAGE_2   "Reservoir storage capacity limit for Season 2"
+  40     EQ_CAP_PUMP_1      "Pump capacity limit for Season 1 (2.2 acft/day * 182.5 days)"
+  41     EQ_CAP_PUMP_2      "Pump capacity limit for Season 2 (2.2 acft/day * 182.5 days)"
+  42     EQ_PUMP_AVAIL_1    "Water available to pump in Season 1 (Spill + 2.0 acft/day * 182.5 days)"
+  43     EQ_PUMP_AVAIL_2    "Water available to pump in Season 2 (Spill + 2.0 acft/day * 182.5 days)"
+  44     EQ_DEMAND_BAL_1    "Meet irrigation demand for Season 1 (1.0 acft/acre)"
+  45     EQ_DEMAND_BAL_2    "Meet irrigation demand for Season 2 (3.0 acft/acre)";
+  46   
+  47  * 3. EQUATION DEFINITIONS
+  48  * Objective: 300*Acres - Capital Costs - 20*Pumping
+  49  EQ_OBJ..
+  50     v_profit =E= (300 * v_acres)
+  51                  - (10000 * v_build_high + 6000 * v_build_low)
+  52                  - (8000 * v_build_pump)
+  53                  - (20 * v_pumped1)
+  54                  - (20 * v_pumped2);
+  55   
+  56  * Dam Selection (High, Low, or None)
+  57  EQ_DAM_MUTEX..
+  58     v_build_high + v_build_low =L= 1;
+  59   
+  60  * Reservoir Balances (Inflow S1 = 600, S2 = 200)
+  61  EQ_WATER_BAL_1..
+  62     v_storage1 =E= v_storage2 + 600 - v_release1 - v_spill1;
+  63   
+  64  EQ_WATER_BAL_2..
+  65     v_storage2 =E= v_storage1 + 200 - v_release2 - v_spill2;
+  66   
+  67  * Storage Capacity Limits
+  68  EQ_CAP_STORAGE_1..
+  69     v_storage1 =L= 700 * v_build_high + 300 * v_build_low;
+  70   
+  71  EQ_CAP_STORAGE_2..
+  72     v_storage2 =L= 700 * v_build_high + 300 * v_build_low;
+  73   
+  74  * Pump Mechanical Limits: 2.2 acft/day * 182.5 days = 401.5 acft
+  75  EQ_CAP_PUMP_1..
+  76     v_pumped1 =L= 401.5 * v_build_pump;
+  77   
+  78  EQ_CAP_PUMP_2..
+  79     v_pumped2 =L= 401.5 * v_build_pump;
+  80   
+  81  * Pump Water Supply Limits: Spill + (2.0 acft/day * 182.5 days = 365 acft)
+  82  EQ_PUMP_AVAIL_1..
+  83     v_pumped1 =L= v_spill1 + 365.0;
+  84   
+  85  EQ_PUMP_AVAIL_2..
+  86     v_pumped2 =L= v_spill2 + 365.0;
+  87   
+  88  * Demand Balance Constraints (Pure scalar multiplication)
+  89  EQ_DEMAND_BAL_1..
+  90     v_release1 + v_pumped1 =E= 1.0 * v_acres;
+  91   
+  92  EQ_DEMAND_BAL_2..
+  93     v_release2 + v_pumped2 =E= 3.0 * v_acres;
   94   
-  95  * 5. LOG THE FINAL RESULTS
-  96  DISPLAY v_profit.L, v_acres.L, v_build_high.L, v_build_low.L, v_build_pump.L, v_storage1.L, v_storage2.L, v_release1.L, v_release2.L, v_pumped1.L, v_pumped2.L, v_spill1.L, v_spill2.L;
+  95  * 4. DEFINE AND SOLVE THE MODEL
+  96  MODEL RESERVOIR /ALL/;
+  97   
+  98  SOLVE RESERVOIR MAXIMIZING v_profit USING MIP;
+  99   
+ 100  * 5. LOG THE FINAL RESULTS
+ 101  DISPLAY v_profit.L, v_acres.L, v_build_high.L, v_build_low.L, v_build_pump.L, v_storage1.L, v_storage2.L, v_release1.L, v_release2.L, v_pumped1.L, v_pumped2.L, v_spill1.L, v_spill2.L;
+ 102   
+ 103  * Dump all input data and results to a GAMS gdx file
+ 104  Execute_Unload "HW5.gdx";
+ 105  * Dump the gdx file to an Excel workbook
+ 106  Execute "gdx2xls HW5.gdx"
 
 
 COMPILATION TIME     =        0.000 SECONDS      2 MB  54.6.0 38ab6eeb WEX-WEI
-GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:06:38 Page 2
+GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:37:05 Page 2
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Equation Listing    SOLVE RESERVOIR Using MIP From line 93
+Equation Listing    SOLVE RESERVOIR Using MIP From line 98
 
 
 ---- EQ_OBJ  =E=  Objective function to maximize net profit
@@ -164,9 +174,9 @@ EQ_DEMAND_BAL_1..  - v_acres + v_release1 + v_pumped1 =E= 0 ; (LHS = 0)
 
 EQ_DEMAND_BAL_2..  - 3*v_acres + v_release2 + v_pumped2 =E= 0 ; (LHS = 0)
      
-GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:06:38 Page 3
+GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:37:05 Page 3
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Column Listing      SOLVE RESERVOIR Using MIP From line 93
+Column Listing      SOLVE RESERVOIR Using MIP From line 98
 
 
 ---- v_profit  Total annual net profit ($)
@@ -283,9 +293,9 @@ v_build_pump
      -401.5     EQ_CAP_PUMP_1
      -401.5     EQ_CAP_PUMP_2
 
-GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:06:38 Page 4
+GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:37:05 Page 4
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Range Statistics    SOLVE RESERVOIR Using MIP From line 93
+Range Statistics    SOLVE RESERVOIR Using MIP From line 98
 
 
 RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
@@ -294,9 +304,9 @@ RHS       [min, max] : [ 1.000E+00, 6.000E+02] - Zero values observed as well
 Bound     [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
 Matrix    [min, max] : [ 1.000E+00, 1.000E+04]
 
-GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:06:38 Page 5
+GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:37:05 Page 5
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Model Statistics    SOLVE RESERVOIR Using MIP From line 93
+Model Statistics    SOLVE RESERVOIR Using MIP From line 98
 
 
 MODEL STATISTICS
@@ -306,23 +316,23 @@ BLOCKS OF VARIABLES          13     SINGLE VARIABLES           13
 NON ZERO ELEMENTS            37     DISCRETE VARIABLES          3
 
 
-GENERATION TIME      =        0.015 SECONDS      3 MB  54.6.0 38ab6eeb WEX-WEI
-GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:06:38 Page 6
+GENERATION TIME      =        0.000 SECONDS      3 MB  54.6.0 38ab6eeb WEX-WEI
+GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:37:05 Page 6
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Solution Report     SOLVE RESERVOIR Using MIP From line 93
+Solution Report     SOLVE RESERVOIR Using MIP From line 98
 
 
                S O L V E      S U M M A R Y
 
      MODEL   RESERVOIR           OBJECTIVE  v_profit
      TYPE    MIP                 DIRECTION  MAXIMIZE
-     SOLVER  CPLEX               FROM LINE  93
+     SOLVER  CPLEX               FROM LINE  98
 
 **** SOLVER STATUS     1 Normal Completion
 **** MODEL STATUS      1 Optimal
 **** OBJECTIVE VALUE            82150.0000
 
- RESOURCE USAGE, LIMIT          0.016 10000000000.000
+ RESOURCE USAGE, LIMIT          0.063 10000000000.000
  ITERATION COUNT, LIMIT         9    2147483647
 *** This solver runs with a community license.
 --- GMO setup time: 0.00s
@@ -333,7 +343,7 @@ Solution Report     SOLVE RESERVOIR Using MIP From line 93
 
 
 --- MIP status (101): integer optimal solution.
---- Cplex Time: 0.02sec (det. 0.14 ticks)
+--- Cplex Time: 0.06sec (det. 0.14 ticks)
 
 
 Proven optimal solution
@@ -406,12 +416,12 @@ Relative gap:            0.000000
 **** REPORT SUMMARY :        0     NONOPT
                              0 INFEASIBLE
                              0  UNBOUNDED
-GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:06:38 Page 7
+GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:37:05 Page 7
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 E x e c u t i o n
 
 
-----     96 VARIABLE v_profit.L            =    82150.000  Total annual net profit ($)
+----    101 VARIABLE v_profit.L            =    82150.000  Total annual net profit ($)
             VARIABLE v_acres.L             =      382.500  Acres irrigated (continuous)
             VARIABLE v_build_high.L        =        1.000  1 if high dam (700 acft) is built else 0
             VARIABLE v_build_low.L         =        0.000  1 if low dam (300 acft) is built else 0
@@ -426,7 +436,7 @@ E x e c u t i o n
             VARIABLE v_spill2.L            =        0.000  Spill from reservoir downstream in Season 2 (acft)
 
 
-EXECUTION TIME       =        0.093 SECONDS      3 MB  54.6.0 38ab6eeb WEX-WEI
+EXECUTION TIME       =        4.281 SECONDS      3 MB  54.6.0 38ab6eeb WEX-WEI
 
 
 USER: Course License                                 G260818+0003Ac-GEN
