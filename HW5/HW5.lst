@@ -1,0 +1,440 @@
+GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:06:38 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+      Reservoir Design and Irrigation Supply Problem
+      Formulated based on Problem 7.4 (Figure 7.3 & Table 7.5)
+      Pure Scalar Version - No sets, indices, or array mappings.
+   6   
+   7  * 1. DEFINE ALL SCALAR VARIABLES
+   8  VARIABLES
+   9     v_profit           Total annual net profit ($);
+  10   
+  11  POSITIVE VARIABLES
+  12     v_acres            Acres irrigated (continuous)
+  13     v_storage1         Storage in reservoir at end of Season 1 (acft)
+  14     v_storage2         Storage in reservoir at end of Season 2 (acft)
+  15     v_release1         Gravity release to farm in Season 1 (acft)
+  16     v_release2         Gravity release to farm in Season 2 (acft)
+  17     v_spill1           Spill from reservoir downstream in Season 1 (acft)
+  18     v_spill2           Spill from reservoir downstream in Season 2 (acft)
+  19     v_pumped1          Water pumped from river to farm in Season 1 (acft)
+  20     v_pumped2          Water pumped from river to farm in Season 2 (acft);
+  21   
+  22  BINARY VARIABLES
+  23     v_build_high       1 if high dam (700 acft) is built else 0
+  24     v_build_low        1 if low dam (300 acft) is built else 0
+  25     v_build_pump       1 if pump station is built else 0;
+  26   
+  27  * 2. DECLARE EQUATIONS
+  28  EQUATIONS
+  29     EQ_OBJ             "Objective function to maximize net profit"
+  30     EQ_DAM_MUTEX       "Ensure only one dam size can be selected"
+  31     EQ_WATER_BAL_1     "Reservoir mass balance for Season 1"
+  32     EQ_WATER_BAL_2     "Reservoir mass balance for Season 2"
+  33     EQ_CAP_STORAGE_1   "Reservoir storage capacity limit for Season 1"
+  34     EQ_CAP_STORAGE_2   "Reservoir storage capacity limit for Season 2"
+  35     EQ_CAP_PUMP_1      "Pump capacity limit for Season 1 (2.2 acft/day * 182.5 days)"
+  36     EQ_CAP_PUMP_2      "Pump capacity limit for Season 2 (2.2 acft/day * 182.5 days)"
+  37     EQ_PUMP_AVAIL_1    "Water available to pump in Season 1 (Spill + 2.0 acft/day * 182.5 days)"
+  38     EQ_PUMP_AVAIL_2    "Water available to pump in Season 2 (Spill + 2.0 acft/day * 182.5 days)"
+  39     EQ_DEMAND_BAL_1    "Meet irrigation demand for Season 1 (1.0 acft/acre)"
+  40     EQ_DEMAND_BAL_2    "Meet irrigation demand for Season 2 (3.0 acft/acre)";
+  41   
+  42  * 3. EQUATION DEFINITIONS
+  43  * Objective: 300*Acres - Capital Costs - 20*Pumping
+  44  EQ_OBJ..
+  45     v_profit =E= (300 * v_acres)
+  46                  - (10000 * v_build_high + 6000 * v_build_low)
+  47                  - (8000 * v_build_pump)
+  48                  - (20 * v_pumped1)
+  49                  - (20 * v_pumped2);
+  50   
+  51  * Dam Selection (High, Low, or None)
+  52  EQ_DAM_MUTEX..
+  53     v_build_high + v_build_low =L= 1;
+  54   
+  55  * Reservoir Balances (Inflow S1 = 600, S2 = 200)
+  56  EQ_WATER_BAL_1..
+  57     v_storage1 =E= v_storage2 + 600 - v_release1 - v_spill1;
+  58   
+  59  EQ_WATER_BAL_2..
+  60     v_storage2 =E= v_storage1 + 200 - v_release2 - v_spill2;
+  61   
+  62  * Storage Capacity Limits
+  63  EQ_CAP_STORAGE_1..
+  64     v_storage1 =L= 700 * v_build_high + 300 * v_build_low;
+  65   
+  66  EQ_CAP_STORAGE_2..
+  67     v_storage2 =L= 700 * v_build_high + 300 * v_build_low;
+  68   
+  69  * Pump Mechanical Limits: 2.2 acft/day * 182.5 days = 401.5 acft
+  70  EQ_CAP_PUMP_1..
+  71     v_pumped1 =L= 401.5 * v_build_pump;
+  72   
+  73  EQ_CAP_PUMP_2..
+  74     v_pumped2 =L= 401.5 * v_build_pump;
+  75   
+  76  * Pump Water Supply Limits: Spill + (2.0 acft/day * 182.5 days = 365 acft)
+  77  EQ_PUMP_AVAIL_1..
+  78     v_pumped1 =L= v_spill1 + 365.0;
+  79   
+  80  EQ_PUMP_AVAIL_2..
+  81     v_pumped2 =L= v_spill2 + 365.0;
+  82   
+  83  * Demand Balance Constraints (Pure scalar multiplication)
+  84  EQ_DEMAND_BAL_1..
+  85     v_release1 + v_pumped1 =E= 1.0 * v_acres;
+  86   
+  87  EQ_DEMAND_BAL_2..
+  88     v_release2 + v_pumped2 =E= 3.0 * v_acres;
+  89   
+  90  * 4. DEFINE AND SOLVE THE MODEL
+  91  MODEL RESERVOIR /ALL/;
+  92   
+  93  SOLVE RESERVOIR MAXIMIZING v_profit USING MIP;
+  94   
+  95  * 5. LOG THE FINAL RESULTS
+  96  DISPLAY v_profit.L, v_acres.L, v_build_high.L, v_build_low.L, v_build_pump.L, v_storage1.L, v_storage2.L, v_release1.L, v_release2.L, v_pumped1.L, v_pumped2.L, v_spill1.L, v_spill2.L;
+
+
+COMPILATION TIME     =        0.000 SECONDS      2 MB  54.6.0 38ab6eeb WEX-WEI
+GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:06:38 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE RESERVOIR Using MIP From line 93
+
+
+---- EQ_OBJ  =E=  Objective function to maximize net profit
+
+EQ_OBJ..  v_profit - 300*v_acres + 20*v_pumped1 + 20*v_pumped2 + 10000*v_build_high + 6000*v_build_low + 8000*v_build_pump =E= 0 ; (LHS = 0)
+     
+
+---- EQ_DAM_MUTEX  =L=  Ensure only one dam size can be selected
+
+EQ_DAM_MUTEX..  v_build_high + v_build_low =L= 1 ; (LHS = 0)
+     
+
+---- EQ_WATER_BAL_1  =E=  Reservoir mass balance for Season 1
+
+EQ_WATER_BAL_1..  v_storage1 - v_storage2 + v_release1 + v_spill1 =E= 600 ; (LHS = 0, INFES = 600 ****)
+     
+
+---- EQ_WATER_BAL_2  =E=  Reservoir mass balance for Season 2
+
+EQ_WATER_BAL_2..  - v_storage1 + v_storage2 + v_release2 + v_spill2 =E= 200 ; (LHS = 0, INFES = 200 ****)
+     
+
+---- EQ_CAP_STORAGE_1  =L=  Reservoir storage capacity limit for Season 1
+
+EQ_CAP_STORAGE_1..  v_storage1 - 700*v_build_high - 300*v_build_low =L= 0 ; (LHS = 0)
+     
+
+---- EQ_CAP_STORAGE_2  =L=  Reservoir storage capacity limit for Season 2
+
+EQ_CAP_STORAGE_2..  v_storage2 - 700*v_build_high - 300*v_build_low =L= 0 ; (LHS = 0)
+     
+
+---- EQ_CAP_PUMP_1  =L=  Pump capacity limit for Season 1 (2.2 acft/day * 182.5 days)
+
+EQ_CAP_PUMP_1..  v_pumped1 - 401.5*v_build_pump =L= 0 ; (LHS = 0)
+     
+
+---- EQ_CAP_PUMP_2  =L=  Pump capacity limit for Season 2 (2.2 acft/day * 182.5 days)
+
+EQ_CAP_PUMP_2..  v_pumped2 - 401.5*v_build_pump =L= 0 ; (LHS = 0)
+     
+
+---- EQ_PUMP_AVAIL_1  =L=  Water available to pump in Season 1 (Spill + 2.0 acft/day * 182.5 days)
+
+EQ_PUMP_AVAIL_1..  - v_spill1 + v_pumped1 =L= 365 ; (LHS = 0)
+     
+
+---- EQ_PUMP_AVAIL_2  =L=  Water available to pump in Season 2 (Spill + 2.0 acft/day * 182.5 days)
+
+EQ_PUMP_AVAIL_2..  - v_spill2 + v_pumped2 =L= 365 ; (LHS = 0)
+     
+
+---- EQ_DEMAND_BAL_1  =E=  Meet irrigation demand for Season 1 (1.0 acft/acre)
+
+EQ_DEMAND_BAL_1..  - v_acres + v_release1 + v_pumped1 =E= 0 ; (LHS = 0)
+     
+
+---- EQ_DEMAND_BAL_2  =E=  Meet irrigation demand for Season 2 (3.0 acft/acre)
+
+EQ_DEMAND_BAL_2..  - 3*v_acres + v_release2 + v_pumped2 =E= 0 ; (LHS = 0)
+     
+GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:06:38 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE RESERVOIR Using MIP From line 93
+
+
+---- v_profit  Total annual net profit ($)
+
+v_profit
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       EQ_OBJ
+
+
+---- v_acres  Acres irrigated (continuous)
+
+v_acres
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -300       EQ_OBJ
+       -1       EQ_DEMAND_BAL_1
+       -3       EQ_DEMAND_BAL_2
+
+
+---- v_storage1  Storage in reservoir at end of Season 1 (acft)
+
+v_storage1
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       EQ_WATER_BAL_1
+       -1       EQ_WATER_BAL_2
+        1       EQ_CAP_STORAGE_1
+
+
+---- v_storage2  Storage in reservoir at end of Season 2 (acft)
+
+v_storage2
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       EQ_WATER_BAL_1
+        1       EQ_WATER_BAL_2
+        1       EQ_CAP_STORAGE_2
+
+
+---- v_release1  Gravity release to farm in Season 1 (acft)
+
+v_release1
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       EQ_WATER_BAL_1
+        1       EQ_DEMAND_BAL_1
+
+
+---- v_release2  Gravity release to farm in Season 2 (acft)
+
+v_release2
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       EQ_WATER_BAL_2
+        1       EQ_DEMAND_BAL_2
+
+
+---- v_spill1  Spill from reservoir downstream in Season 1 (acft)
+
+v_spill1
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       EQ_WATER_BAL_1
+       -1       EQ_PUMP_AVAIL_1
+
+
+---- v_spill2  Spill from reservoir downstream in Season 2 (acft)
+
+v_spill2
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       EQ_WATER_BAL_2
+       -1       EQ_PUMP_AVAIL_2
+
+
+---- v_pumped1  Water pumped from river to farm in Season 1 (acft)
+
+v_pumped1
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       20       EQ_OBJ
+        1       EQ_CAP_PUMP_1
+        1       EQ_PUMP_AVAIL_1
+        1       EQ_DEMAND_BAL_1
+
+
+---- v_pumped2  Water pumped from river to farm in Season 2 (acft)
+
+v_pumped2
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       20       EQ_OBJ
+        1       EQ_CAP_PUMP_2
+        1       EQ_PUMP_AVAIL_2
+        1       EQ_DEMAND_BAL_2
+
+
+---- v_build_high  1 if high dam (700 acft) is built else 0
+
+v_build_high
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    10000       EQ_OBJ
+        1       EQ_DAM_MUTEX
+     -700       EQ_CAP_STORAGE_1
+     -700       EQ_CAP_STORAGE_2
+
+
+---- v_build_low  1 if low dam (300 acft) is built else 0
+
+v_build_low
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+     6000       EQ_OBJ
+        1       EQ_DAM_MUTEX
+     -300       EQ_CAP_STORAGE_1
+     -300       EQ_CAP_STORAGE_2
+
+
+---- v_build_pump  1 if pump station is built else 0
+
+v_build_pump
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+     8000       EQ_OBJ
+     -401.5     EQ_CAP_PUMP_1
+     -401.5     EQ_CAP_PUMP_2
+
+GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:06:38 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE RESERVOIR Using MIP From line 93
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.000E+00, 6.000E+02] - Zero values observed as well
+Bound     [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 1.000E+04]
+
+GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:06:38 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE RESERVOIR Using MIP From line 93
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS          12     SINGLE EQUATIONS           12
+BLOCKS OF VARIABLES          13     SINGLE VARIABLES           13
+NON ZERO ELEMENTS            37     DISCRETE VARIABLES          3
+
+
+GENERATION TIME      =        0.015 SECONDS      3 MB  54.6.0 38ab6eeb WEX-WEI
+GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:06:38 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE RESERVOIR Using MIP From line 93
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   RESERVOIR           OBJECTIVE  v_profit
+     TYPE    MIP                 DIRECTION  MAXIMIZE
+     SOLVER  CPLEX               FROM LINE  93
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE            82150.0000
+
+ RESOURCE USAGE, LIMIT          0.016 10000000000.000
+ ITERATION COUNT, LIMIT         9    2147483647
+*** This solver runs with a community license.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.2.0.0 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.02sec (det. 0.14 ticks)
+
+
+Proven optimal solution
+MIP Solution:        82150.000000    (9 iterations, 0 nodes)
+
+Best possible:       82150.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+                           LOWER          LEVEL          UPPER
+
+---- EQU EQ_OBJ              .              .              .          
+---- EQU EQ_DAM_MU~        -INF            1.0000         1.0000      
+---- EQU EQ_WATER_~       600.0000       600.0000       600.0000      
+---- EQU EQ_WATER_~       200.0000       200.0000       200.0000      
+---- EQU EQ_CAP_ST~        -INF         -117.5000          .          
+---- EQU EQ_CAP_ST~        -INF         -700.0000          .          
+---- EQU EQ_CAP_PU~        -INF          -36.5000          .          
+---- EQU EQ_CAP_PU~        -INF          -36.5000          .          
+---- EQU EQ_PUMP_A~        -INF          365.0000       365.0000      
+---- EQU EQ_PUMP_A~        -INF          365.0000       365.0000      
+---- EQU EQ_DEMAND~          .              .              .          
+---- EQU EQ_DEMAND~          .              .              .          
+
+  EQ_OBJ  Objective function to maximize net profit
+  EQ_DAM_MUTEX  Ensure only one dam size can be selected
+  EQ_WATER_BAL_1  Reservoir mass balance for Season 1
+  EQ_WATER_BAL_2  Reservoir mass balance for Season 2
+  EQ_CAP_STORAGE_1  Reservoir storage capacity limit for Season 1
+  EQ_CAP_STORAGE_2  Reservoir storage capacity limit for Season 2
+  EQ_CAP_PUMP_1  Pump capacity limit for Season 1 (2.2 acft/day * 182.5 days)
+  EQ_CAP_PUMP_2  Pump capacity limit for Season 2 (2.2 acft/day * 182.5 days)
+  EQ_PUMP_AVAIL_1  Water available to pump in Season 1 (Spill + 2.0 acft/day * 182.5 days)
+  EQ_PUMP_AVAIL_2  Water available to pump in Season 2 (Spill + 2.0 acft/day * 182.5 days)
+  EQ_DEMAND_BAL_1  Meet irrigation demand for Season 1 (1.0 acft/acre)
+  EQ_DEMAND_BAL_2  Meet irrigation demand for Season 2 (3.0 acft/acre)
+
+                           LOWER          LEVEL          UPPER
+
+---- VAR v_profit          -INF        82150.0000        +INF         
+---- VAR v_acres             .           382.5000        +INF         
+---- VAR v_storage1          .           582.5000        +INF         
+---- VAR v_storage2          .              .            +INF         
+---- VAR v_release1          .            17.5000        +INF         
+---- VAR v_release2          .           782.5000        +INF         
+---- VAR v_spill1            .              .            +INF         
+---- VAR v_spill2            .              .            +INF         
+---- VAR v_pumped1           .           365.0000        +INF         
+---- VAR v_pumped2           .           365.0000        +INF         
+---- VAR v_build_h~          .             1.0000         1.0000      
+---- VAR v_build_l~          .              .             1.0000      
+---- VAR v_build_p~          .             1.0000         1.0000      
+
+  v_profit  Total annual net profit ($)
+  v_acres  Acres irrigated (continuous)
+  v_storage1  Storage in reservoir at end of Season 1 (acft)
+  v_storage2  Storage in reservoir at end of Season 2 (acft)
+  v_release1  Gravity release to farm in Season 1 (acft)
+  v_release2  Gravity release to farm in Season 2 (acft)
+  v_spill1  Spill from reservoir downstream in Season 1 (acft)
+  v_spill2  Spill from reservoir downstream in Season 2 (acft)
+  v_pumped1  Water pumped from river to farm in Season 1 (acft)
+  v_pumped2  Water pumped from river to farm in Season 2 (acft)
+  v_build_high  1 if high dam (700 acft) is built else 0
+  v_build_low  1 if low dam (300 acft) is built else 0
+  v_build_pump  1 if pump station is built else 0
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 54.6.0  38ab6eeb Oct 14, 2026          WEX-WEI x86 64bit/MS Windows - 10/19/26 19:06:38 Page 7
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     96 VARIABLE v_profit.L            =    82150.000  Total annual net profit ($)
+            VARIABLE v_acres.L             =      382.500  Acres irrigated (continuous)
+            VARIABLE v_build_high.L        =        1.000  1 if high dam (700 acft) is built else 0
+            VARIABLE v_build_low.L         =        0.000  1 if low dam (300 acft) is built else 0
+            VARIABLE v_build_pump.L        =        1.000  1 if pump station is built else 0
+            VARIABLE v_storage1.L          =      582.500  Storage in reservoir at end of Season 1 (acft)
+            VARIABLE v_storage2.L          =        0.000  Storage in reservoir at end of Season 2 (acft)
+            VARIABLE v_release1.L          =       17.500  Gravity release to farm in Season 1 (acft)
+            VARIABLE v_release2.L          =      782.500  Gravity release to farm in Season 2 (acft)
+            VARIABLE v_pumped1.L           =      365.000  Water pumped from river to farm in Season 1 (acft)
+            VARIABLE v_pumped2.L           =      365.000  Water pumped from river to farm in Season 2 (acft)
+            VARIABLE v_spill1.L            =        0.000  Spill from reservoir downstream in Season 1 (acft)
+            VARIABLE v_spill2.L            =        0.000  Spill from reservoir downstream in Season 2 (acft)
+
+
+EXECUTION TIME       =        0.093 SECONDS      3 MB  54.6.0 38ab6eeb WEX-WEI
+
+
+USER: Course License                                 G260818+0003Ac-GEN
+      Utah State University                                     DCE5615
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\samto\OneDrive - USU\CEE6410\Github Local\CEE-6410-Torgersen-Gonzalez\HW5\HW5.gms
+Output     C:\Users\samto\OneDrive - USU\CEE6410\Github Local\CEE-6410-Torgersen-Gonzalez\HW5\HW5.lst

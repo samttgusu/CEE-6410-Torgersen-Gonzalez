@@ -1,0 +1,70 @@
+B 3 C o m p i l a t i o n
+B 105 Equation Listing    SOLVE RESERVOIR Using MIP From line 93
+D 108 EQ_OBJ
+D 113 EQ_DAM_MUTEX
+D 118 EQ_WATER_BAL_1
+D 123 EQ_WATER_BAL_2
+D 128 EQ_CAP_STORAGE_1
+D 133 EQ_CAP_STORAGE_2
+D 138 EQ_CAP_PUMP_1
+D 143 EQ_CAP_PUMP_2
+D 148 EQ_PUMP_AVAIL_1
+D 153 EQ_PUMP_AVAIL_2
+D 158 EQ_DEMAND_BAL_1
+D 163 EQ_DEMAND_BAL_2
+B 169 Column Listing      SOLVE RESERVOIR Using MIP From line 93
+E 172 v_profit
+E 179 v_acres
+E 188 v_storage1
+E 197 v_storage2
+E 206 v_release1
+E 214 v_release2
+E 222 v_spill1
+E 230 v_spill2
+E 238 v_pumped1
+E 248 v_pumped2
+E 258 v_build_high
+E 268 v_build_low
+E 278 v_build_pump
+B 288 Range Statistics    SOLVE RESERVOIR Using MIP From line 93
+B 299 Model Statistics    SOLVE RESERVOIR Using MIP From line 93
+B 312 Solution Report     SOLVE RESERVOIR Using MIP From line 93
+F 349 EQ_OBJ
+F 350 EQ_DAM_MUTEX
+F 351 EQ_WATER_BAL_1
+F 352 EQ_WATER_BAL_2
+F 353 EQ_CAP_STORAGE_1
+F 354 EQ_CAP_STORAGE_2
+F 355 EQ_CAP_PUMP_1
+F 356 EQ_CAP_PUMP_2
+F 357 EQ_PUMP_AVAIL_1
+F 358 EQ_PUMP_AVAIL_2
+F 359 EQ_DEMAND_BAL_1
+F 360 EQ_DEMAND_BAL_2
+G 377 v_profit
+G 378 v_acres
+G 379 v_storage1
+G 380 v_storage2
+G 381 v_release1
+G 382 v_release2
+G 383 v_spill1
+G 384 v_spill2
+G 385 v_pumped1
+G 386 v_pumped2
+G 387 v_build_high
+G 388 v_build_low
+G 389 v_build_pump
+B 411 E x e c u t i o n
+I 413 v_profit
+I 414 v_acres
+I 415 v_build_high
+I 416 v_build_low
+I 417 v_build_pump
+I 418 v_storage1
+I 419 v_storage2
+I 420 v_release1
+I 421 v_release2
+I 422 v_pumped1
+I 423 v_pumped2
+I 424 v_spill1
+I 425 v_spill2

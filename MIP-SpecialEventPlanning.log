@@ -1,0 +1,48 @@
+--- Job MIP-SpecialEventPlanning.gms Start 10/08/26 16:03:15 54.4.0 9a60ae27 WEX-WEI x86 64bit/MS Windows
+--- Applying:
+    C:\GAMS\54\gmsprmNT.txt
+--- GAMS Parameters defined
+    Input "C:\Users\samto\OneDrive - USU\CEE6410\Github Local\CEE-6410-Torgersen-Gonzalez\MIP-SpecialEventPlanning.gms"
+    PageSize 0
+    ScrDir "C:\Users\samto\OneDrive - USU\CEE6410\Github Local\CEE-6410-Torgersen-Gonzalez\225n\"
+    SysDir C:\GAMS\54\
+    LogOption 3
+    AppendLog 1
+    ErrMsg 1
+    ErrorLog 99
+    IDE 1
+    LstTitleLeftAligned 1
+Licensee: Course License                                 G260818+0003Ac-GEN
+          Utah State University                                     DCE5615
+          225n\gamslice.dat
+          1d9a2824-f32d-4897
+          node:88380905 mem:32 cores:8 ipport:50202 v:2                    
+          Course license for use within the course and related course work
+          The time-limited license stops working on : Jun 14, 2027
+System information: 8 physical cores and 32 Gb physical memory detected
+GAMS 54.4.0   Copyright (C) 1987-2026 GAMS Development. All rights reserved
+--- Starting compilation
+--- MIP-SpecialEventPlanning.gms(77) 3 Mb 1 Error
+*** Error 233 in C:\Users\samto\OneDrive - USU\CEE6410\Github Local\CEE-6410-Torgersen-Gonzalez\MIP-SpecialEventPlanning.gms
+    Empty model list
+      no legal data between / / or 'all' without any equations
+--- MIP-SpecialEventPlanning.gms(80) 3 Mb 2 Errors
+*** Error 140 in C:\Users\samto\OneDrive - USU\CEE6410\Github Local\CEE-6410-Torgersen-Gonzalez\MIP-SpecialEventPlanning.gms
+    Unknown symbol
+--- MIP-SpecialEventPlanning.gms(82) 3 Mb 6 Errors
+*** Error  36 in C:\Users\samto\OneDrive - USU\CEE6410\Github Local\CEE-6410-Torgersen-Gonzalez\MIP-SpecialEventPlanning.gms
+    '=' or '..' or ':=' or '$=' operator expected
+    rest of statement ignored
+*** Error 141 in C:\Users\samto\OneDrive - USU\CEE6410\Github Local\CEE-6410-Torgersen-Gonzalez\MIP-SpecialEventPlanning.gms
+    Symbol declared but no values have been assigned. Check for missing
+       data definition, assignment, data loading or implicit assignment
+       via a solve statement. Suppress with $onImplicitAssign.
+       A wild shot: You may have spurious commas in the explanatory
+       text of a declaration. Check symbol reference list.
+*** Error 140 in C:\Users\samto\OneDrive - USU\CEE6410\Github Local\CEE-6410-Torgersen-Gonzalez\MIP-SpecialEventPlanning.gms
+    Unknown symbol
+*** Error 140 in C:\Users\samto\OneDrive - USU\CEE6410\Github Local\CEE-6410-Torgersen-Gonzalez\MIP-SpecialEventPlanning.gms
+    Unknown symbol
+--- MIP-SpecialEventPlanning.gms(87) 3 Mb 6 Errors
+*** Status: Compilation error(s)
+--- Job MIP-SpecialEventPlanning.gms Stop 10/08/26 16:03:15 elapsed 0:00:00.029
