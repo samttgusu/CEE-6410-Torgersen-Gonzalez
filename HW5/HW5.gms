@@ -4,6 +4,15 @@ CEE 6410/5410
 October 15, 2026
 Pure Scalar Version - No sets, indices, or array mappings.
 
+Problem 1, Chapter 7, Bishop et al.
+A farmer plans to develop water for irrigation. He is considering two possible sources of
+water: a gravity diversion from a possible reservoir with two alternative capacities and/or a
+pump from a lower river diversion (refer to Figure 7.3). Between the reservoir and pump
+site the river base flow increases by 2 acft/day due to groundwater drainage into the river.
+Ignore losses from the reservoir. The river flow into the reservoir and the farmer's demand
+during each of two six-month seasons of the year are given in Table 7.5. Revenue is estimated at $300 per year per acre irrigated.
+
+
 Samuel T. Torgersen-Gonzalez
 s.torgersen-gonzalez@usu.edu
 October 15, 2026
